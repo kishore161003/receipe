@@ -1,10 +1,59 @@
+"use client";
 import React from "react";
 import Link from "next/link";
 import { ScrollArea } from "./ui/scroll-area";
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
 import { Label } from "./ui/label";
+import { useUploadThing } from "@lib/uploadthing";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
-const Form = ({ handleSubmit, type, post, setPost }) => {
+const Form = ({ type, post, setPost }) => {
+  const [resume, setResume] = useState(null);
+  // const [img, setimg] = useState(null);
+  const router = useRouter();
+  // useEffect(() => {
+  //   if (img !== null) {
+  //     setPost((prevPost) => ({ ...prevPost, images: img }));
+  //     console.log(post);
+  //     console.log(img);
+  //   }
+  // }, [post, setPost, img]);
+
+  const { startUpload } = useUploadThing("media");
+  const createRecipe = async (img) => {
+    const res = await fetch("/api/posts/create", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify([post, img]),
+    });
+    console.log(res, "res");
+    if (res.status === 200) {
+      router.push("/");
+    } else {
+      alert("Error creating recipe");
+    }
+  };
+
+  const onSubmiter = async (e) => {
+    e.preventDefault();
+    var imgUrl = "";
+    var flag = false;
+    if (resume) {
+      flag = true;
+      const imageRes = await startUpload(Array.from(resume));
+      if (imageRes) {
+        createRecipe(imageRes[0].url);
+      }
+    }
+    if (!flag) {
+      createRecipe();
+    }
+  };
+
   return (
     <ScrollArea className="h-screen">
       <section className="w-full max-w-full flex-start flex-col py-2 ml-32">
@@ -17,7 +66,7 @@ const Form = ({ handleSubmit, type, post, setPost }) => {
           memories.
         </p>
         <form
-          onSubmit={handleSubmit}
+          onSubmit={onSubmiter}
           className="mt-10 w-full max-w-2xl flex flex-col gap-7 glassmorphism"
         >
           <label>
@@ -31,6 +80,18 @@ const Form = ({ handleSubmit, type, post, setPost }) => {
               value={post.name}
               onChange={(e) => setPost({ ...post, name: e.target.value })}
               required
+            />
+          </label>
+          <label className="flex flex-col">
+            <span className="font-satoshi mb-2 font-semibold  text-base text-gray-700">
+              Image
+            </span>
+            <input
+              id="resume"
+              onChange={(e) => setResume(e.target.files)}
+              type="file"
+              className="border-dotted file:bg-transparent file:border-hidden hover:file:border-dashed hover:file:border-gray-400 hover:file:rounded-md mt-4 w-full md:w-1/2"
+              placeholder="Select"
             />
           </label>
           <label>
@@ -56,13 +117,21 @@ const Form = ({ handleSubmit, type, post, setPost }) => {
           >
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="Vegtarian" id="r1" />
-              <Label htmlFor="r1" className="text-md font-bold text-slate-700">
+              <Label
+                htmlFor="r1"
+                className="text-md font-bold text-slate-700"
+                required
+              >
                 Vegtarian
               </Label>
             </div>
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="Non Vegtarian" id="r2" />
-              <Label htmlFor="r2" className="text-md font-bold text-slate-700">
+              <Label
+                htmlFor="r2"
+                className="text-md font-bold text-slate-700"
+                required
+              >
                 Non Vegtarian
               </Label>
             </div>
@@ -99,7 +168,7 @@ const Form = ({ handleSubmit, type, post, setPost }) => {
             <button
               type="submit"
               className="px-5 py-1.5 text-sm rounded-full bg-primary-orange text-white font-semibold"
-              onClick={handleSubmit}
+              onClick={onSubmiter}
             >
               Post
             </button>
