@@ -1,6 +1,6 @@
 "use client";
 import RecipeCard from "@components/RecipeCard";
-import { ScrollArea } from "@components/ui/Scroll-area";
+import { ScrollArea } from "@components/ui/scroll-area";
 import { useState, useEffect } from "react";
 
 const page = () => {
