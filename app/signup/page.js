@@ -3,7 +3,7 @@ import React from "react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-const page = () => {
+const Page = () => {
   const router = useRouter();
   const [newUser, setnewUser] = useState({
     username: "",
@@ -129,4 +129,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

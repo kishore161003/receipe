@@ -3,7 +3,7 @@ import RecipeCard from "@components/RecipeCard";
 import { ScrollArea } from "@components/ui/scroll-area";
 import { useState, useEffect } from "react";
 
-const page = () => {
+const Page = () => {
   const [userRecipes, setUserRecipes] = useState([]);
 
   useEffect(() => {
@@ -54,4 +54,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

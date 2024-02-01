@@ -6,7 +6,7 @@ import Form from "@components/Form";
 import { useContext } from "react";
 import { MyContext } from "@lib/context/userContext";
 
-const page = () => {
+const Page = () => {
   const { myData, setMyData } = useContext(MyContext);
 
   const router = useRouter();
@@ -49,4 +49,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

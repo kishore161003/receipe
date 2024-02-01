@@ -14,7 +14,7 @@ const Home = () => {
           <span className="blue_gradient "> share recipes, connect. </span>
         </h1>
         <p className="desc text-center">
-          "Share the joy of cooking, create memories in every recipe."
+          Share the joy of cooking, create memories in every recipe.
         </p>
         <button
           className="black_btn mt-4"

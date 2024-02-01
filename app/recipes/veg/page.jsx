@@ -3,7 +3,7 @@ import RecipeCard from "@components/RecipeCard";
 import { ScrollArea } from "@components/ui/scroll-area";
 import { useState, useEffect } from "react";
 
-const page = () => {
+const Page = () => {
   const [userRecipes, setUserRecipes] = useState([]);
 
   useEffect(() => {
@@ -20,7 +20,7 @@ const page = () => {
   return (
     <section className="w-full ml-12">
       <h1 className="head_text text-left">
-        <span className="blue_gradient "> Non Vegetarian Food Recipes</span>
+        <span className="blue_gradient "> Vegetarian Food Recipes</span>
       </h1>
       <form className="relative w-[1190px] mt-10 mb-0 flex-center">
         <input
@@ -54,4 +54,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

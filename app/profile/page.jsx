@@ -1,7 +1,7 @@
 import React from "react";
 import Profile from "@components/Profile";
 
-const page = () => {
+const Page = () => {
   return (
     <div>
       <Profile />
@@ -9,4 +9,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

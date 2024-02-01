@@ -6,7 +6,7 @@ import { useState, useEffect } from "react";
 import RecipeCard from "@components/RecipeCard";
 import { ScrollArea } from "@components/ui/scroll-area";
 
-const page = () => {
+const Page = () => {
   const { myData, setMyData } = useContext(MyContext);
   const [userRecipes, setUserRecipes] = useState([]);
 
@@ -26,8 +26,8 @@ const page = () => {
         <span className="blue_gradient ">Bookmarks</span>
       </h1>
       <p className="desc text-left">
-        "Bookmark others culinary adventures! Save and organize your favorite
-        recipes effortlessly. Explore a world of flavors at your fingertips."
+        Bookmark others culinary adventures! Save and organize your favorite
+        recipes effortlessly. Explore a world of flavors at your fingertips.
       </p>
       {userRecipes == null || userRecipes.length === 0 ? (
         <div className="glassmorphism mt-8 h-[500px] w-[1190px] flex justify-center items-center border-solid border-blue-600 shadow-xl text-gray-500">
@@ -52,4 +52,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

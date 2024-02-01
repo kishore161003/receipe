@@ -1,12 +1,12 @@
 "use client";
-import React from "react";
 import { useRouter } from "next/navigation";
-import { useContext } from "react";
+import { useContext, useState } from "react";
+
 import { MyContext } from "@lib/context/userContext";
 
-const page = () => {
+const Page = () => {
   const router = useRouter();
-  const [password, setPassword] = React.useState("");
+  const [password, setPassword] = useState("");
   const { myData, setMyData } = useContext(MyContext);
 
   const validate = async (e) => {
@@ -86,4 +86,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;
