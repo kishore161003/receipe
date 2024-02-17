@@ -5,6 +5,8 @@ import Recipe from "@models/recipe";
 export const GET = async (req, { params }) => {
   const { db } = await connectToDatabase();
   const { id } = params;
+  console.log(id, "id")
+  // get all bookmarks
   if (id.length === 1) {
     try {
       const bookmark = await User.findById({ _id: id[0] });
@@ -24,6 +26,7 @@ export const GET = async (req, { params }) => {
   }
 
   const [user, post] = id;
+  // toggle bookmark
   try {
     const bookmark = await User.findById({ _id: user });
 

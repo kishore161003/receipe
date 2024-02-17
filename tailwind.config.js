@@ -33,6 +33,7 @@ module.exports = withUt({
         fontFamily: {
           satoshi: ["Satoshi", "sans-serif"],
           inter: ["Inter", "sans-serif"],
+          jos: ["Josefin Sans", "sans-serif"],
         },
         fontSize: {
           xl: "1.25rem",

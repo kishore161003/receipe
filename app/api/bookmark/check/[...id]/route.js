@@ -6,6 +6,7 @@ export const GET = async (req, { params }) => {
   const { db } = await connectToDatabase();
   const { id } = params;
   const [user, post] = id;
+  // check if post is bookmarked
   try {
     const bookmark = await User.findById({ _id: user });
 

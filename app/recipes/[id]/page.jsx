@@ -2,37 +2,42 @@
 import React, { useState, useEffect, useContext } from "react";
 import { ScrollArea } from "@components/ui/scroll-area";
 import { Separator } from "@components/ui/separator";
-import { MyContext } from "@lib/context/userContext";
-// ... (existing imports)
+import { useSession } from "next-auth/react";
 
 const RecipeDetailPage = ({ params }) => {
-  const { myData, setMyData } = useContext(MyContext);
+  const { data: session } = useSession(true);
   const [isLiked, setIsLiked] = useState(false);
   const [recipe, setRecipe] = useState({});
+  const [myData, setMyData] = useState([]);
   const [isIngredientsDrawerOpen, setIsIngredientsDrawerOpen] = useState(false);
   const [isStepsDrawerOpen, setIsStepsDrawerOpen] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
+        if (session) {
+          const user = await fetch(`/api/user/${session.user.email}`);
+          const userData = await user.json();
+          setMyData(userData);
+          const bookmarkResponse = await fetch(
+            `/api/bookmark/check/${userData[0]._id}/${params.id}`
+          );
+          const bookmarkData = await bookmarkResponse.json();
+          console.log(bookmarkData, "bookmarkData");
+          setIsLiked(bookmarkData.bookmarked);
+        }
         const recipeResponse = await fetch(`/api/recipes/${params.id}`);
         const recipeData = await recipeResponse.json();
         setRecipe(recipeData[0]);
-
-        if (myData.isLogged) {
-          const bookmarkResponse = await fetch(
-            `/api/bookmark/check/${myData.data._id}/${params.id}`
-          );
-          const bookmarkData = await bookmarkResponse.json();
-          setIsLiked(bookmarkData.bookmarked);
-        }
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     };
 
     fetchData();
-  }, [params.id, myData.isLogged, myData.data._id]);
+  }, [params.id, session]);
+
+  console.log("mine", myData);
 
   const toggleIngredientsDrawer = () => {
     setIsIngredientsDrawerOpen(!isIngredientsDrawerOpen);
@@ -62,9 +67,43 @@ const RecipeDetailPage = ({ params }) => {
               <div className="flex items-start justify-between mb-4">
                 {/* Name, Type, Time */}
                 <div>
-                  <h1 className="text-3xl font-semibold mb-2">
-                    Name: {recipe.recipeName}
-                  </h1>
+                  <div className="flex justify-between ">
+                    <h1 className="text-3xl font-semibold mb-2">
+                      Name: {recipe.recipeName}
+                    </h1>
+                    {session && (
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill={isLiked ? "black" : "none"}
+                        stroke="black"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="cursor-pointer"
+                        onClick={() => {
+                          setIsLiked(!isLiked);
+                          const updateBookmark = async () => {
+                            try {
+                              const res = await fetch(
+                                `/api/bookmark/${myData[0]._id}/${params.id}`
+                              );
+                              // Handle the response as needed
+                            } catch (error) {
+                              console.error("Error updating bookmark:", error);
+                            }
+                          };
+                          updateBookmark();
+                        }}
+                      >
+                        <g>
+                          <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+                        </g>
+                      </svg>
+                    )}
+                  </div>
                   <Separator className="w-[400px] ml-0 mb-4 mt-2 h-[0.15rem] bg-black" />
                   <p className="text-2xl font-semibold mt-5 mb-5">
                     Type: {recipe.type}
@@ -77,38 +116,6 @@ const RecipeDetailPage = ({ params }) => {
                 </div>
 
                 {/* Like Button */}
-                {myData.isLogged && (
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill={isLiked ? "black" : "none"}
-                    stroke="black"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="cursor-pointer absolute top-[87px] right-12"
-                    onClick={() => {
-                      setIsLiked(!isLiked);
-                      const updateBookmark = async () => {
-                        try {
-                          const res = await fetch(
-                            `/api/bookmark/${myData.data._id}/${params.id}`
-                          );
-                          // Handle the response as needed
-                        } catch (error) {
-                          console.error("Error updating bookmark:", error);
-                        }
-                      };
-                      updateBookmark();
-                    }}
-                  >
-                    <g>
-                      <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
-                    </g>
-                  </svg>
-                )}
               </div>
             </div>
             {/* Ingredients */}

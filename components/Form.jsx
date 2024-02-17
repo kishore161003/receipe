@@ -8,18 +8,25 @@ import { useUploadThing } from "@lib/uploadthing";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import { useSession } from "next-auth/react";
 
 const Form = ({ type, post, setPost }) => {
   const [resume, setResume] = useState(null);
-  // const [img, setimg] = useState(null);
   const router = useRouter();
-  // useEffect(() => {
-  //   if (img !== null) {
-  //     setPost((prevPost) => ({ ...prevPost, images: img }));
-  //     console.log(post);
-  //     console.log(img);
-  //   }
-  // }, [post, setPost, img]);
+  const [loading, setLoading] = useState(false);
+
+  const { data: session } = useSession(true);
+
+  useEffect(() => {
+    const fetchRecipes = async () => {
+      const res2 = await fetch(`/api/user/${session.user.email}`);
+      const data2 = await res2.json();
+      setPost({ ...post, userId: data2[0]._id });
+    };
+    fetchRecipes();
+  }, []);
+
+  console.log(post.userId);
 
   const { startUpload } = useUploadThing("media");
   const createRecipe = async (img) => {
@@ -40,6 +47,8 @@ const Form = ({ type, post, setPost }) => {
 
   const onSubmiter = async (e) => {
     e.preventDefault();
+    setLoading(true);
+
     var imgUrl = "";
     var flag = false;
     if (resume) {
@@ -50,8 +59,9 @@ const Form = ({ type, post, setPost }) => {
       }
     }
     if (!flag) {
-      createRecipe();
+      createRecipe("/default.jpg");
     }
+    setLoading(false);
   };
 
   return (
@@ -170,7 +180,7 @@ const Form = ({ type, post, setPost }) => {
               className="px-5 py-1.5 text-sm rounded-full bg-primary-orange text-white font-semibold"
               onClick={onSubmiter}
             >
-              Post
+              {loading ? "posting..." : "post"}
             </button>
           </div>
         </form>

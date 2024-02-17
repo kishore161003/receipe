@@ -5,6 +5,7 @@ import { useState } from "react";
 
 const Page = () => {
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
   const [newUser, setnewUser] = useState({
     username: "",
     email: "",
@@ -14,6 +15,7 @@ const Page = () => {
 
   const createUser = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
     const res = await fetch("/api/signup", {
       method: "POST",
       headers: {
@@ -26,6 +28,7 @@ const Page = () => {
     } else {
       alert("Something went wrong. Please try again.");
     }
+    setIsLoading(false);
   };
 
   return (
@@ -111,7 +114,7 @@ const Page = () => {
           required
         /> */}
         <button className="black_btn mt-2" onClick={createUser}>
-          Sign In
+          {isLoading ? "Signing Up..." : "Sign Up"}
         </button>
         <div className="flex flex-col items-center gap-1">
           <p className="text-lg text-zinc-600 mt-1">or</p>

@@ -5,20 +5,29 @@ import { useContext } from "react";
 import { useState, useEffect } from "react";
 import RecipeCard from "@components/RecipeCard";
 import { ScrollArea } from "@components/ui/scroll-area";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 const Page = () => {
-  const { myData, setMyData } = useContext(MyContext);
+  const { data: session } = useSession(true);
+  const router = useRouter();
   const [userRecipes, setUserRecipes] = useState([]);
 
   useEffect(() => {
     const bookmark = async () => {
-      const res = await fetch(`/api/bookmark/${myData.data._id}`);
-      const data = await res.json();
-      setUserRecipes(data);
-      console.log(data);
+      if (!session) {
+        router.push("/");
+      } else {
+        const myData = await fetch(`/api/user/${session.user.email}`);
+        const myDataJson = await myData.json();
+        const res = await fetch(`/api/bookmark/${myDataJson[0]._id}`);
+        const data = await res.json();
+        setUserRecipes(data);
+        console.log(data);
+      }
     };
     bookmark();
-  }, []);
+  }, [session]);
 
   return (
     <section className="w-full ml-12">

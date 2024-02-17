@@ -1,38 +1,26 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { useContext, useState } from "react";
+import { signIn } from "next-auth/react";
 
 import { MyContext } from "@lib/context/userContext";
 
 const Page = () => {
   const router = useRouter();
   const [password, setPassword] = useState("");
-  const { myData, setMyData } = useContext(MyContext);
+  const [myData, setMyData] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
 
   const validate = async (e) => {
     e.preventDefault();
-    const res = await fetch("/api/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ ...myData, password }),
+    setIsLoading(true);
+    const res = await signIn("credentials", {
+      email: myData.email,
+      password: password,
+      redirect: true,
+      callbackUrl: "/",
     });
-    const data = await res.json();
-    if (res.status === 200) {
-      console.log(data);
-      setMyData((prev) => ({
-        email: data.email,
-        user: data.username,
-        data: data,
-        isLogged: true,
-      }));
-      router.push("/");
-    } else if (res.status === 400) {
-      alert("Incorrect password");
-    } else {
-      alert("User not found");
-    }
+    setIsLoading(false);
   };
 
   return (
@@ -68,7 +56,7 @@ const Page = () => {
           required
         />
         <button className="black_btn" onClick={validate}>
-          Sign In
+          {isLoading ? "Signing In..." : "Sign In"}
         </button>
         <div className="flex flex-col items-center gap-1">
           <p className="text-lg text-zinc-600 mt-1">or</p>

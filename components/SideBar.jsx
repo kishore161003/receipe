@@ -5,20 +5,22 @@ import { Sidebar, Menu, MenuItem, SubMenu } from "react-pro-sidebar";
 import Image from "next/image";
 import { useContext } from "react";
 import { Separator } from "@/components/ui/separator";
-import { MyContext } from "@lib/context/userContext";
+import { useSession } from "next-auth/react";
+import { signOut } from "next-auth/react";
 
 const SideBar = () => {
-  const { myData, setMyData } = useContext(MyContext);
-
+  const { data: session } = useSession(true);
+  // const { myData, setMyData } = useContext(MyContext);
   const router = useRouter();
+  console.log("hi this is ", session);
   return (
     <div className="w-[240px]">
       <Sidebar className="" backgroundColor="rgba(0 ,0 ,0)">
         <Menu className="">
           <div className="flex flex-col h-screen justify-between">
             <div>
-              <h1 className="text-3xl text-white font-bold font-sans py-4 px-4">
-                Cook & Das
+              <h1 className="text-3xl text-white font-bold font-sans py-4 px-4 hover:cursor-pointer">
+                <span onClick={() => router.push("/")}>Cook & Das</span>
               </h1>
               <MenuItem
                 className="font-semibold font-int mt-2 text-white hover:text-black"
@@ -28,13 +30,13 @@ const SideBar = () => {
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
                     viewBox="0 0 24 24"
-                    stroke-width="1.5"
+                    strokeWidth="1.5"
                     stroke="currentColor"
                     class="w-6 h-6"
                   >
                     <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
                       d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"
                     />
                   </svg>
@@ -46,7 +48,7 @@ const SideBar = () => {
               <Separator className="w-[210px] ml-4" />
               <MenuItem
                 className={`font-semibold font-int text-white hover:text-black ${
-                  !myData.isLogged && "hidden"
+                  !session && "hidden"
                 }`}
                 icon={
                   <svg
@@ -131,7 +133,7 @@ const SideBar = () => {
 
               <MenuItem
                 className={`font-semibold font-inter text-white hover:text-black ${
-                  !myData.isLogged && "hidden"
+                  !session && "hidden"
                 }`}
                 icon={
                   <svg
@@ -173,7 +175,7 @@ const SideBar = () => {
                   </svg>
                 }
                 className={`font-semibold font-inter text-white hover:text-black ${
-                  !myData.isLogged && "hidden"
+                  !session && "hidden"
                 }`}
                 onClick={() => router.push("/bookmarks")}
               >
@@ -200,9 +202,11 @@ const SideBar = () => {
                     />
                   </svg>
                 }
-                onClick={() => router.push("/login")}
+                onClick={
+                  !session ? () => router.push("/login") : () => signOut()
+                }
               >
-                {myData.isLogged ? "Logout" : "Login"}
+                {session ? "Logout" : "Login"}
               </MenuItem>
             </div>
           </div>

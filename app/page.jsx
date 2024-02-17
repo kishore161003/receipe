@@ -2,9 +2,12 @@
 import Footer from "@components/Footer";
 import { useRouter } from "next/navigation";
 import HomeCard from "@components/HomeCard";
+import { useSession } from "next-auth/react";
 
 const Home = () => {
   const router = useRouter();
+  const { data: session } = useSession(true);
+  console.log(session);
   return (
     <div>
       <section className="w-full  flex-center flex-col mt-4 ">
