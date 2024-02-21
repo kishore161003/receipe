@@ -5,11 +5,15 @@ Link- https://cook-das-saks.vercel.app/
 This project is a Recipe sharing Platform, built using NextAuth , NextJS and Tailwind CSS. The primary purpose of creating this project is for learning, practicing, and improving skills in NextJS.
 
 Overview
+
 The Cook&Das allows user to authenticate and Login using their own Credentials. The user Can Post their Recipes and BookMark other Recipes. The user can Search for the Particular Recipe and Bookmark them to ClipBoard.
 
 Technologies Used
+
 Nextjs: Next.js is a popular open-source React framework that enables the development of server-side rendered (SSR) React applications. 
+
 NextAuth : Provide authentication functionality to the Users.
+
 Tailwind CSS: A utility-first CSS framework for creating responsive and customizable designs.
 
 Some Snapshots From the Website:
